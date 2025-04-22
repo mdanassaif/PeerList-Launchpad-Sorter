@@ -1,4 +1,3 @@
-// content.js
 function createSortButton() {
   const existingButton = document.getElementById('peerlist-sort-button');
   if (existingButton) existingButton.remove();
@@ -9,7 +8,7 @@ function createSortButton() {
   
   const button = document.createElement('button');
   button.id = 'peerlist-sort-button';
-  button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M11 5h10"></path><path d="M11 9h7"></path><path d="M11 13h4"></path><path d="M3 17h18"></path><path d="M11 21h7"></path><path d="M7 5v12"></path><path d="M7 5 3 9"></path><path d="m7 5 4 4"></path></svg>Sort by Upvotes';
+  button.innerHTML = '⬆️ Sort by Upvotes';
   button.style.cssText = `
     padding: 10px 16px;
     background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
@@ -30,11 +29,13 @@ function createSortButton() {
   button.addEventListener('mouseover', () => {
     button.style.background = 'linear-gradient(135deg, #4338ca 0%, #2563eb 100%)';
     button.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.4)';
+    button.style.transform = 'translateY(-2px)';
   });
   
   button.addEventListener('mouseout', () => {
     button.style.background = 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)';
     button.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+    button.style.transform = 'translateY(0)';
   });
   
   button.addEventListener('mousedown', () => {
@@ -47,7 +48,7 @@ function createSortButton() {
   
   let isSorted = false;
   button.addEventListener('click', () => {
-    button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M12 2v4"></path><path d="M12 18v4"></path><path d="M4.93 4.93l2.83 2.83"></path><path d="M16.24 16.24l2.83 2.83"></path><path d="M2 12h4"></path><path d="M18 12h4"></path><path d="M4.93 19.07l2.83-2.83"></path><path d="M16.24 7.76l2.83-2.83"></path></svg>Sorting...';
+    button.innerHTML = '🔄 Processing...';
     button.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)';
     
     setTimeout(() => {
@@ -55,9 +56,9 @@ function createSortButton() {
       isSorted = !isSorted;
       
       if (isSorted) {
-        button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Reset to Default';
+        button.innerHTML = '🏠 Reset to Default';
       } else {
-        button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M11 5h10"></path><path d="M11 9h7"></path><path d="M11 13h4"></path><path d="M3 17h18"></path><path d="M11 21h7"></path><path d="M7 5v12"></path><path d="M7 5 3 9"></path><path d="m7 5 4 4"></path></svg>Sort by Upvotes';
+        button.innerHTML = '⬆️ Sort by Upvotes';
       }
       
       button.style.background = 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)';
@@ -125,25 +126,25 @@ function showNotification(message, type = 'success') {
   const existingNotification = document.getElementById('peerlist-notification');
   if (existingNotification) existingNotification.remove();
   
-  let bgColor, icon;
+  let bgColor, emoji;
   switch (type) {
     case 'success':
       bgColor = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-      icon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+      emoji = '✅';
       break;
     case 'warning':
       bgColor = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
-      icon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+      emoji = '⚠️';
       break;
     case 'error':
       bgColor = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
-      icon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+      emoji = '❌';
       break;
   }
   
   const notification = document.createElement('div');
   notification.id = 'peerlist-notification';
-  notification.innerHTML = `${icon}<span>${message}</span>`;
+  notification.innerHTML = `<span style="margin-right: 8px; font-size: 16px;">${emoji}</span><span>${message}</span>`;
   notification.style.cssText = `
     position: fixed;
     bottom: 20px;
@@ -162,18 +163,21 @@ function showNotification(message, type = 'success') {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   `;
   
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @keyframes peerlistSlideIn {
-      from { transform: translateX(100px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes peerlistSlideOut {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(100px); opacity: 0; }
-    }
-  `;
-  document.head.appendChild(style);
+  if (!document.getElementById('peerlist-animation-style')) {
+    const style = document.createElement('style');
+    style.id = 'peerlist-animation-style';
+    style.innerHTML = `
+      @keyframes peerlistSlideIn {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes peerlistSlideOut {
+        from { transform: translateY(0); opacity: 1; }
+        to { transform: translateY(20px); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
   
   document.body.appendChild(notification);
   
