@@ -1,7 +1,42 @@
-To celebrate Launch Day and track your projects' status, follow these steps to ensure they are properly ordered:
+# Peerlist Launchpad Project Organizer
 
-1. Install this useful Chrome extension: Download the code, unzip it, and load it into Chrome Extensions.
-2. Visit the link https://peerlist.io/launchpad/2025/week/*.
-3. You’ll see a button to organize your projects in order.
+A Chrome extension to help organize and track your projects on Peerlist Launchpad 2025.
 
-Let me know if you need help with the setup.
+## Prerequisites
+
+- Google Chrome browser
+- Basic knowledge of Chrome extensions
+
+## Installation Steps
+
+1. **Download the Extension**
+   - Click the "Code" button and select "Download ZIP"
+   - Extract the downloaded ZIP file to a location of your choice
+
+2. **Load the Extension in Chrome**
+   - Open Chrome and navigate to `chrome://extensions/`
+   - Enable "Developer mode" in the top right corner
+   - Click "Load unpacked" and select the extracted extension folder
+
+3. **Using the Extension**
+   - Visit https://peerlist.io/launchpad/2025/week/*
+   - Look for the "Organize Projects" button in the extension popup
+   - Click the button to automatically organize your projects
+
+## Features
+
+- One-click project organization
+- Automatic sorting of projects
+- Easy-to-use interface
+- Real-time updates
+
+## Support
+
+If you encounter any issues or need assistance:
+- Check the extension's popup for error messages
+- Ensure you're on the correct Peerlist Launchpad page
+- Contact support if problems persist
+
+## Contributing
+
+Feel free to submit issues and enhancement requests!

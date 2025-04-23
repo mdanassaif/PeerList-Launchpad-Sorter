@@ -1,86 +1,139 @@
+function getFavicon() {
+  // Try to get the favicon from various possible locations
+  const favicon = document.querySelector('link[rel="icon"]')?.href ||
+                 document.querySelector('link[rel="shortcut icon"]')?.href ||
+                 document.querySelector('link[rel="apple-touch-icon"]')?.href ||
+                 'https://peerlist.io/favicon.ico';
+  
+  return favicon;
+}
+
 function createSortButton() {
+  // Check if we're on the correct URL pattern
+  const urlPattern = /^https:\/\/peerlist\.io\/launchpad\/\d{4}\/week\/\d{1,2}$/;
+  if (!urlPattern.test(window.location.href)) {
+    return; // Exit if not on the correct URL pattern
+  }
+
   const existingButton = document.getElementById('peerlist-sort-button');
   if (existingButton) existingButton.remove();
   
   const buttonContainer = document.createElement('div');
-  buttonContainer.id = 'peerlist-sort-container';
-  buttonContainer.style.cssText = 'position: fixed; top: 100px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px;';
+  buttonContainer.className = 'peerlist-sort-container';
   
+  // Main sort button
   const button = document.createElement('button');
   button.id = 'peerlist-sort-button';
-  button.innerHTML = '⬆️ Sort by Upvotes';
-  button.style.cssText = `
-    padding: 10px 16px;
-    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-    color: white;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  button.className = 'peerlist-sort-button';
+  button.innerHTML = `
+    <img src="${getFavicon()}" alt="Peerlist Logo" class="peerlist-favicon">
+    <span>Sort by Upvotes</span>
   `;
   
-  button.addEventListener('mouseover', () => {
-    button.style.background = 'linear-gradient(135deg, #4338ca 0%, #2563eb 100%)';
-    button.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.4)';
-    button.style.transform = 'translateY(-2px)';
+  // Add minimize button
+  const minimizeButton = document.createElement('button');
+  minimizeButton.className = 'peerlist-minimize-button';
+  minimizeButton.innerHTML = '−';
+  minimizeButton.title = 'Minimize';
+  
+  minimizeButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    buttonContainer.style.display = 'none';
+    localStorage.setItem('peerlistButtonMinimized', 'true');
   });
   
-  button.addEventListener('mouseout', () => {
-    button.style.background = 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)';
-    button.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
-    button.style.transform = 'translateY(0)';
+  // Add dark mode toggle button
+  const darkModeToggle = document.createElement('button');
+  darkModeToggle.className = 'peerlist-dark-mode-toggle';
+  darkModeToggle.innerHTML = '🌓';
+  darkModeToggle.title = 'Toggle Dark Mode';
+  
+  darkModeToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.body.classList.toggle('peerlist-dark-mode');
+    const isDarkMode = document.body.classList.contains('peerlist-dark-mode');
+    localStorage.setItem('peerlistDarkMode', isDarkMode);
+    showNotification(`Dark mode ${isDarkMode ? 'enabled' : 'disabled'}!`, 'success');
   });
   
-  button.addEventListener('mousedown', () => {
-    button.style.transform = 'scale(0.97)';
-  });
-  
-  button.addEventListener('mouseup', () => {
-    button.style.transform = 'scale(1)';
-  });
+  button.appendChild(minimizeButton);
+  button.appendChild(darkModeToggle);
   
   let isSorted = false;
   button.addEventListener('click', () => {
-    button.innerHTML = '🔄 Processing...';
-    button.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)';
+    button.innerHTML = `
+      <img src="${getFavicon()}" alt="Peerlist Logo" class="peerlist-favicon">
+      <span>Processing...</span>
+    `;
+    button.appendChild(minimizeButton);
+    button.appendChild(darkModeToggle);
+    button.style.cursor = 'wait';
     
     setTimeout(() => {
-      sortByUpvotes();
-      isSorted = !isSorted;
-      
-      if (isSorted) {
-        button.innerHTML = '🏠 Reset to Default';
-      } else {
-        button.innerHTML = '⬆️ Sort by Upvotes';
+      try {
+        const result = sortByUpvotes();
+        if (result === 'no_projects') {
+          showNotification('No projects found to sort', 'warning');
+          button.innerHTML = `
+            <img src="${getFavicon()}" alt="Peerlist Logo" class="peerlist-favicon">
+            <span>Sort by Upvotes</span>
+          `;
+        } else {
+          isSorted = !isSorted;
+          if (isSorted) {
+            button.innerHTML = `
+              <img src="${getFavicon()}" alt="Peerlist Logo" class="peerlist-favicon">
+              <span>Reset to Default</span>
+            `;
+          } else {
+            button.innerHTML = `
+              <img src="${getFavicon()}" alt="Peerlist Logo" class="peerlist-favicon">
+              <span>Sort by Upvotes</span>
+            `;
+          }
+        }
+        button.appendChild(minimizeButton);
+        button.appendChild(darkModeToggle);
+        button.style.cursor = 'pointer';
+      } catch (error) {
+        showNotification('An error occurred while sorting', 'error');
+        button.innerHTML = `
+          <img src="${getFavicon()}" alt="Peerlist Logo" class="peerlist-favicon">
+          <span>Sort by Upvotes</span>
+        `;
+        button.appendChild(minimizeButton);
+        button.appendChild(darkModeToggle);
+        button.style.cursor = 'pointer';
       }
-      
-      button.style.background = 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)';
     }, 100);
   });
   
   buttonContainer.appendChild(button);
   document.body.appendChild(buttonContainer);
+  
+  // Check if button was minimized
+  if (localStorage.getItem('peerlistButtonMinimized') === 'true' && 
+      performance.navigation.type !== performance.navigation.TYPE_RELOAD) {
+    buttonContainer.style.display = 'none';
+  }
+  
+  // Check for dark mode preference
+  if (localStorage.getItem('peerlistDarkMode') === 'true') {
+    document.body.classList.add('peerlist-dark-mode');
+  }
 }
 
 function sortByUpvotes() {
   const allArticles = document.querySelectorAll('article');
   
   if (allArticles.length === 0) {
-    showNotification('No projects found to sort', 'warning');
-    return;
+    return 'no_projects';
   }
   
   const container = allArticles[0].parentElement;
   if (!container) {
     showNotification('Could not find project container', 'error');
-    return;
+    return 'error';
   }
   
   const articles = Array.from(allArticles);
@@ -91,8 +144,8 @@ function sortByUpvotes() {
       container.appendChild(article.cloneNode(true));
     });
     window.peerlistOriginalOrder = null;
-    showNotification('✨ Reset to original order!', 'success');
-    return;
+    showNotification('Reset to original order!', 'success');
+    return 'reset';
   }
   
   window.peerlistOriginalOrder = articles.map(a => a.cloneNode(true));
@@ -119,88 +172,67 @@ function sortByUpvotes() {
     container.appendChild(article);
   });
   
-  showNotification('✨ Projects sorted by upvotes!', 'success');
+  showNotification('Projects sorted by upvotes!', 'success');
+  return 'sorted';
 }
 
 function showNotification(message, type = 'success') {
   const existingNotification = document.getElementById('peerlist-notification');
   if (existingNotification) existingNotification.remove();
   
-  let bgColor, emoji;
+  let emoji;
   switch (type) {
     case 'success':
-      bgColor = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
       emoji = '✅';
       break;
     case 'warning':
-      bgColor = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
       emoji = '⚠️';
       break;
     case 'error':
-      bgColor = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
       emoji = '❌';
       break;
   }
   
   const notification = document.createElement('div');
   notification.id = 'peerlist-notification';
-  notification.innerHTML = `<span style="margin-right: 8px; font-size: 16px;">${emoji}</span><span>${message}</span>`;
-  notification.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: ${bgColor};
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    z-index: 10000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    font-size: 14px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    animation: peerlistSlideIn 0.3s ease forwards;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  notification.className = `peerlist-notification ${type}`;
+  notification.innerHTML = `
+    <img src="${getFavicon()}" alt="Peerlist Logo" class="peerlist-favicon">
+    <span>${message}</span>
+    <span class="emoji">${emoji}</span>
   `;
-  
-  if (!document.getElementById('peerlist-animation-style')) {
-    const style = document.createElement('style');
-    style.id = 'peerlist-animation-style';
-    style.innerHTML = `
-      @keyframes peerlistSlideIn {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      @keyframes peerlistSlideOut {
-        from { transform: translateY(0); opacity: 1; }
-        to { transform: translateY(20px); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
-  }
   
   document.body.appendChild(notification);
   
   setTimeout(() => {
-    notification.style.animation = 'peerlistSlideOut 0.3s ease forwards';
+    notification.style.animation = 'peerlistSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards';
     setTimeout(() => notification.remove(), 300);
   }, 3000);
 }
 
 function initialize() {
+  // Reset minimized state on page refresh
+  if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+    localStorage.removeItem('peerlistButtonMinimized');
+  }
+  
+  // Create the button
   createSortButton();
 }
 
+// Handle page load and navigation
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initialize);
 } else {
   initialize();
 }
 
+// Handle navigation changes
 let lastUrl = location.href;
 new MutationObserver(() => {
   if (location.href !== lastUrl) {
     lastUrl = location.href;
-    setTimeout(createSortButton, 1000);
+    // Small delay to ensure page is loaded
+    setTimeout(initialize, 1000);
   }
 }).observe(document, {subtree: true, childList: true});

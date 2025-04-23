@@ -1,13 +1,18 @@
 {
     "manifest_version": 3,
-    "name": "Peerlist Upvote Sorter",
+    "name": "Upvote Sorter",
     "version": "1.0",
-    "description": "Sort Peerlist Launchpad projects by upvotes",
+    "description": "Sort Launchpad projects by upvotes with a beautiful interface",
     "permissions": ["activeTab"],
+    "icons": {
+        "48": "icons/icon.png",
+        "128": "icons/icon.png"
+    },
     "content_scripts": [
       {
         "matches": ["https://peerlist.io/launchpad/*"],
-        "js": ["content.js"]
+        "js": ["content.js"],
+        "css": ["styles.css"]
       }
     ]
-  }
+}
