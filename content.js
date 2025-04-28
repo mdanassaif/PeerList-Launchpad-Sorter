@@ -1,5 +1,4 @@
 function getFavicon() {
-  // Try to get the favicon from various possible locations
   const favicon = document.querySelector('link[rel="icon"]')?.href ||
                  document.querySelector('link[rel="shortcut icon"]')?.href ||
                  document.querySelector('link[rel="apple-touch-icon"]')?.href ||
@@ -9,7 +8,7 @@ function getFavicon() {
 }
 
 function createSortButton() {
-  // Check if we're on the correct URL pattern
+  // Check Correct URL pattern
   const urlPattern = /^https:\/\/peerlist\.io\/launchpad\/\d{4}\/week\/\d{1,2}$/;
   if (!urlPattern.test(window.location.href)) {
     return; // Exit if not on the correct URL pattern

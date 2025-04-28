@@ -1,18 +1,19 @@
 {
-    "manifest_version": 3,
-    "name": "Upvote Sorter",
-    "version": "1.0",
-    "description": "Sort Launchpad projects by upvotes with a beautiful interface",
-    "permissions": ["activeTab"],
-    "icons": {
-        "48": "icons/icon.png",
-        "128": "icons/icon.png"
-    },
-    "content_scripts": [
-      {
-        "matches": ["https://peerlist.io/launchpad/*"],
-        "js": ["content.js"],
-        "css": ["styles.css"]
-      }
-    ]
+  "manifest_version": 3,
+  "name": "Upvote Sorter",
+  "version": "1.0",
+  "description": "Sort Launchpad projects by upvotes with a beautiful interface",
+  "permissions": ["activeTab", "storage"],
+  "icons": {
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://peerlist.io/launchpad/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ]
 }
