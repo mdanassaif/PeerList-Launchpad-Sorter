@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Upvote Sorter",
-  "version": "1.0",
-  "description": "Sort Launchpad projects by upvotes with a beautiful interface",
+  "version": "1.5",
+  "description": "Sort Launchpad projects by upvotes, engagement, and more with a beautiful interface",
   "permissions": ["activeTab", "storage"],
   "icons": {
     "48": "icons/icon.png",

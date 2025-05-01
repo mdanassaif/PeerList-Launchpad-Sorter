@@ -2,11 +2,6 @@
 
 A Chrome extension to help organize and track your projects on Peerlist Launchpad 2025.
 
-## Prerequisites
-
-- Google Chrome browser
-- Basic knowledge of Chrome extensions
-
 ## Installation Steps
 
 1. **Download the Extension**
@@ -30,13 +25,4 @@ A Chrome extension to help organize and track your projects on Peerlist Launchpa
 - Easy-to-use interface
 - Real-time updates
 
-## Support
-
-If you encounter any issues or need assistance:
-- Check the extension's popup for error messages
-- Ensure you're on the correct Peerlist Launchpad page
-- Contact support if problems persist
-
-## Contributing
-
-Feel free to submit issues and enhancement requests!
+ 
